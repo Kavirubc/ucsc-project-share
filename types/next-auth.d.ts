@@ -31,5 +31,6 @@ declare module 'next-auth/jwt' {
     indexNumber: string
     registrationNumber: string
     universityId: string
+    image?: string | null
   }
 }

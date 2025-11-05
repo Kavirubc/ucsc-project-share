@@ -1,5 +1,6 @@
 'use client'
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -19,6 +20,7 @@ interface MobileNavProps {
     user: {
       name?: string | null
       email?: string | null
+      image?: string | null
     }
   } | null
 }
@@ -32,6 +34,16 @@ export function MobileNav({ session }: MobileNavProps) {
     setOpen(false)
     router.push('/')
     router.refresh()
+  }
+
+  const getInitials = (name?: string | null) => {
+    if (!name) return 'U'
+    return name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
   }
 
   return (
@@ -49,9 +61,15 @@ export function MobileNav({ session }: MobileNavProps) {
         <div className="flex flex-col gap-4 mt-8">
           {session ? (
             <>
-              <div className="px-2 py-4 border-b">
-                <p className="text-sm font-medium">{session.user.name}</p>
-                <p className="text-xs text-muted-foreground">{session.user.email}</p>
+              <div className="px-2 py-4 border-b flex items-center gap-3">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage src={session.user?.image || undefined} alt={session.user?.name || 'User'} />
+                  <AvatarFallback>{getInitials(session.user?.name)}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                  <p className="text-sm font-medium">{session.user?.name}</p>
+                  <p className="text-xs text-muted-foreground">{session.user?.email}</p>
+                </div>
               </div>
               <Link
                 href="/dashboard"

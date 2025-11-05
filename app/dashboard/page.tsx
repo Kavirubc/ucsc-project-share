@@ -139,11 +139,11 @@ export default async function Dashboard() {
               {recentProjects.map((project) => (
                 <Card key={project._id!.toString()} className="flex flex-col overflow-hidden">
                   {project.thumbnailUrl && (
-                    <div className="relative w-full h-48 bg-muted">
+                    <div className="relative w-full h-48 bg-muted overflow-hidden">
                       <img
                         src={project.thumbnailUrl}
                         alt={project.title}
-                        className="w-full h-full object-cover"
+                        className="absolute inset-0 w-full h-full object-cover"
                       />
                     </div>
                   )}

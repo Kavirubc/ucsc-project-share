@@ -21,7 +21,7 @@ export async function Navbar() {
               priority
             />
           </Link>
-          {session && (
+          {/* {session && (
             <nav className="hidden md:flex items-center gap-6 text-sm">
               <Link
                 href="/dashboard"
@@ -42,8 +42,8 @@ export async function Navbar() {
                 Explore
               </Link>
             </nav>
-          )}
-          {!session && (
+          )} */}
+          {/* {!session && (
             <nav className="hidden md:flex items-center gap-6 text-sm">
               <Link
                 href="/explore"
@@ -52,7 +52,7 @@ export async function Navbar() {
                 Explore
               </Link>
             </nav>
-          )}
+          )} */}
         </div>
 
         <div className="flex items-center gap-2">

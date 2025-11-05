@@ -60,15 +60,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.indexNumber = (user as any).indexNumber
         token.registrationNumber = (user as any).registrationNumber
         token.universityId = (user as any).universityId
+        token.image = (user as any).image
       }
       return token
     },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string
-        ;(session.user as any).indexNumber = token.indexNumber
-        ;(session.user as any).registrationNumber = token.registrationNumber
-        ;(session.user as any).universityId = token.universityId
+          ; (session.user as any).indexNumber = token.indexNumber
+          ; (session.user as any).registrationNumber = token.registrationNumber
+          ; (session.user as any).universityId = token.universityId
+        session.user.image = token.image as string
       }
       return session
     }
