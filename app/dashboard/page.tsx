@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { PortfolioLinkCard } from '@/components/portfolio-link-card'
 
 export default async function Dashboard() {
   const session = await auth()
@@ -9,6 +10,8 @@ export default async function Dashboard() {
     redirect('/login')
   }
 
+  const portfolioUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/profile/${session.user.id}`
+
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-slate-50 dark:bg-slate-900">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -16,6 +19,9 @@ export default async function Dashboard() {
           <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
           <p className="text-muted-foreground">Welcome back, {session.user.name}!</p>
         </div>
+
+        {/* Portfolio Link Card */}
+        <PortfolioLinkCard userId={session.user.id} portfolioUrl={portfolioUrl} />
 
         <div className="grid gap-6 md:grid-cols-2">
           <Card>

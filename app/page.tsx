@@ -10,12 +10,11 @@ export default async function Home() {
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center space-y-8">
         <div className="space-y-4">
-          <h1 className="text-5xl font-bold tracking-tight sm:text-7xl bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
-            Share & Collaborate
+          <h1 className="text-5xl font-bold tracking-tight sm:text-7xl">
+            Your Academic Portfolio
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            A platform for Sri Lankan university students to share projects,
-            collaborate on ideas, and build together.
+            Showcase your projects. Build your portfolio. Get discovered by recruiters.
           </p>
         </div>
 
@@ -52,21 +51,21 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 max-w-4xl mx-auto">
             <div className="p-6 rounded-lg border bg-card">
-              <h3 className="font-semibold mb-2">Share Projects</h3>
+              <h3 className="font-semibold mb-2">Upload Projects</h3>
               <p className="text-sm text-muted-foreground">
-                Showcase your academic projects and get feedback from peers
+                Share your slide decks, pitch videos, and project details
               </p>
             </div>
             <div className="p-6 rounded-lg border bg-card">
-              <h3 className="font-semibold mb-2">Collaborate</h3>
+              <h3 className="font-semibold mb-2">Portfolio Link</h3>
               <p className="text-sm text-muted-foreground">
-                Find team members and work together on innovative ideas
+                Get a shareable link to show recruiters and interviewers
               </p>
             </div>
             <div className="p-6 rounded-lg border bg-card">
-              <h3 className="font-semibold mb-2">Learn & Grow</h3>
+              <h3 className="font-semibold mb-2">Build Your Brand</h3>
               <p className="text-sm text-muted-foreground">
-                Explore projects from students across universities
+                Create your professional presence for career opportunities
               </p>
             </div>
           </div>
