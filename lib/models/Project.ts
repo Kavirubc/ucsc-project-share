@@ -5,6 +5,7 @@ export interface TeamMember {
   email: string
   role: string
   indexNumber?: string
+  userId?: string // ObjectId as string if they're a registered user
 }
 
 export interface Project {

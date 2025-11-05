@@ -118,8 +118,24 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     <div className="space-y-3">
                       {project.teamMembers.map((member, index) => (
                         <div key={index} className="flex justify-between items-start p-3 border rounded-md">
-                          <div>
-                            <p className="font-medium">{member.name}</p>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              {member.userId ? (
+                                <Link
+                                  href={`/profile/${member.userId}`}
+                                  className="font-medium text-primary hover:underline"
+                                >
+                                  {member.name}
+                                </Link>
+                              ) : (
+                                <p className="font-medium">{member.name}</p>
+                              )}
+                              {member.userId && (
+                                <Badge variant="secondary" className="text-xs">
+                                  Registered
+                                </Badge>
+                              )}
+                            </div>
                             <p className="text-sm text-muted-foreground">{member.role}</p>
                             {member.indexNumber && (
                               <p className="text-xs text-muted-foreground">
