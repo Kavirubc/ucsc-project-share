@@ -1,7 +1,4 @@
 import { notFound } from 'next/navigation'
-import { getDatabase } from '@/lib/mongodb'
-import { Project } from '@/lib/models/Project'
-import { User } from '@/lib/models/User'
 import { ObjectId } from 'mongodb'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,6 +7,9 @@ import { Eye, ExternalLink, Github, FileText, Video, Calendar, Users, Globe } fr
 import Link from 'next/link'
 import { VideoEmbed } from '@/components/video-embed'
 import ReactMarkdown from 'react-markdown'
+import { Project } from '@/lib/models/Project'
+import { User } from '@/lib/models/User'
+import { getProjectData } from '@/app/api/projects/actions'
 
 interface ProjectPageProps {
   params: Promise<{
@@ -24,26 +24,19 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound()
   }
 
-  const db = await getDatabase()
+  let project: Project | null = null
+  let owner: User | null = null
 
-  const project = await db.collection<Project>('projects').findOne({
-    _id: new ObjectId(id)
-  })
+  try {
+    ; ({ project, owner } = await getProjectData(id))
+  } catch (error) {
+    console.error('Error fetching project data:', error)
+    notFound()
+  }
 
   if (!project) {
     notFound()
   }
-
-  // Get project owner info
-  const owner = await db.collection<User>('users').findOne({
-    _id: project.userId
-  })
-
-  // Increment view count
-  await db.collection<Project>('projects').updateOne(
-    { _id: new ObjectId(id) },
-    { $inc: { views: 1 } }
-  )
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-background">

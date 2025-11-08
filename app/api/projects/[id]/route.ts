@@ -3,43 +3,7 @@ import { auth } from '@/auth'
 import { getDatabase } from '@/lib/mongodb'
 import { Project } from '@/lib/models/Project'
 import { ObjectId } from 'mongodb'
-
-// GET /api/projects/[id] - Get a specific project
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params
-
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 })
-    }
-
-    const db = await getDatabase()
-    const project = await db.collection<Project>('projects').findOne({
-      _id: new ObjectId(id)
-    })
-
-    if (!project) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 })
-    }
-
-    // Increment view count
-    await db.collection<Project>('projects').updateOne(
-      { _id: new ObjectId(id) },
-      { $inc: { views: 1 } }
-    )
-
-    return NextResponse.json({ project })
-  } catch (error) {
-    console.error('Error fetching project:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch project' },
-      { status: 500 }
-    )
-  }
-}
+import { User } from '@/lib/models/User'
 
 // PUT /api/projects/[id] - Update a project
 export async function PUT(
