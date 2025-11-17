@@ -4,9 +4,10 @@ import React, { type ReactNode, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/utils";
 
-gsap.registerPlugin(useGSAP, SplitText);
+gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
 
 interface SplitTextCompProps {
   children: ReactNode;
@@ -15,6 +16,8 @@ interface SplitTextCompProps {
   variant?: "chars" | "words" | "lines" | string;
   maskType?: "lines" | "words" | "chars";
   autoSplit?: boolean;
+  ScrollTriggerEnable?: boolean;
+  markers?: boolean;
 }
 
 export default function SplitTextComp({
@@ -24,12 +27,14 @@ export default function SplitTextComp({
   variant = "words",
   maskType = "words",
   autoSplit = false,
+  ScrollTriggerEnable = false,
+  markers = false,
 }: SplitTextCompProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const defaultAnimationProps: gsap.TweenVars = {
     yPercent: 120,
-    rotate: 10,
+    rotate: 5,
     stagger: 0.2,
     duration: 1,
   };
@@ -40,6 +45,17 @@ export default function SplitTextComp({
     () => {
       const containerEl = containerRef.current;
       if (!containerEl) return;
+
+      const tl = gsap.timeline();
+
+      if (ScrollTriggerEnable) {
+        ScrollTrigger.create({
+          trigger: containerEl,
+          start: "top 85%",
+          animation: tl,
+          markers: markers,
+        });
+      }
 
       gsap.set(containerEl, { opacity: 1 });
 
@@ -64,13 +80,14 @@ export default function SplitTextComp({
       activeVariants.forEach((key) => {
         if (split[key]) {
           // Check if the property exists and is populated
-          gsap.from(split[key], mergedAnimationProps);
+          tl.from(split[key], mergedAnimationProps);
         }
       });
 
       // optional: return cleanup function (though useGSAP handles context cleanup)
       return () => {
         split.revert(); // revert SplitText instance if needed
+        tl.kill(); // kill timeline
       };
     },
     {
