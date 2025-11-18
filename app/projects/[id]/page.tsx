@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Eye, ExternalLink, Github, FileText, Video, Calendar, Users, Globe, Heart } from 'lucide-react'
+import { Eye, ExternalLink, Github, FileText, Video, Globe, Heart } from 'lucide-react'
 import Link from 'next/link'
 import { VideoEmbed } from '@/components/video-embed'
 import { ReportProjectButton } from '@/components/report-project-button'
@@ -322,7 +322,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               {project.teamMembers.length > 0 && (
                 <div className="border rounded-lg p-6">
                   <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                    <Users className="h-6 w-6 text-primary" />
+                    {/* <Users className="h-6 w-6 text-primary" /> */}
                     Team Members
                   </h2>
                   <div className="space-y-3">
