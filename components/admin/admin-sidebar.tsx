@@ -32,20 +32,32 @@ export function AdminSidebar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [pendingReportsCount, setPendingReportsCount] = useState<number | null>(null)
 
-  // Fetch pending reports count
+  // Fetch unresolved reports count (pending + reviewed, not resolved/dismissed)
   useEffect(() => {
-    const fetchPendingCount = async () => {
+    const fetchUnresolvedCount = async () => {
       try {
-        const response = await fetch('/api/admin/reports?status=pending&limit=1')
-        if (response.ok) {
-          const data = await response.json()
-          setPendingReportsCount(data.pagination?.total || 0)
+        // Fetch pending and reviewed separately and sum them
+        const [pendingRes, reviewedRes] = await Promise.all([
+          fetch('/api/admin/reports?status=pending&limit=1'),
+          fetch('/api/admin/reports?status=reviewed&limit=1')
+        ])
+        
+        let total = 0
+        if (pendingRes.ok) {
+          const pendingData = await pendingRes.json()
+          total += pendingData.pagination?.total || 0
         }
+        if (reviewedRes.ok) {
+          const reviewedData = await reviewedRes.json()
+          total += reviewedData.pagination?.total || 0
+        }
+        
+        setPendingReportsCount(total)
       } catch (error) {
-        console.error('Error fetching pending reports count:', error)
+        console.error('Error fetching unresolved reports count:', error)
       }
     }
-    fetchPendingCount()
+    fetchUnresolvedCount()
   }, [])
 
   const sidebarContent = (

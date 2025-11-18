@@ -8,8 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { Eye, Flag } from 'lucide-react'
 import Link from 'next/link'
-import { getReportStatusBadge, getStatusLabel, getReasonLabel } from '@/lib/utils/reports'
+import { getReportStatusBadge, getStatusLabel, getReasonLabel } from '@/lib/utils/reports-client'
 import { REPORT_REASONS } from '@/lib/constants/reports'
+import { Label } from '@/components/ui/label'
 
 interface ReportData {
   _id: string
@@ -47,22 +48,30 @@ export default function AdminReportsPage() {
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [statusFilter, setStatusFilter] = useState('')
-  const [reasonFilter, setReasonFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('unresolved')
+  const [reasonFilter, setReasonFilter] = useState('all')
+  const [showResolved, setShowResolved] = useState(false)
 
   useEffect(() => {
     fetchReports()
-  }, [page, statusFilter, reasonFilter])
+  }, [page, statusFilter, reasonFilter, showResolved])
 
   const fetchReports = async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams({
         page: page.toString(),
-        limit: '20',
+        limit: '50', // Increase limit to handle resolved reports
       })
-      if (statusFilter) params.append('status', statusFilter)
-      if (reasonFilter) params.append('reason', reasonFilter)
+
+      // Handle unresolved filter (pending + reviewed)
+      if (statusFilter === 'unresolved') {
+        params.append('status', 'unresolved')
+      } else if (statusFilter && statusFilter !== 'all') {
+        params.append('status', statusFilter)
+      }
+
+      if (reasonFilter && reasonFilter !== 'all') params.append('reason', reasonFilter)
 
       const response = await fetch(`/api/admin/reports?${params}`)
       if (response.status === 401 || response.status === 403) {
@@ -86,7 +95,39 @@ export default function AdminReportsPage() {
         return
       }
 
-      setReports(data.reports || [])
+      let filteredReports = data.reports || []
+
+      // If showing unresolved and user wants to see resolved too, fetch them
+      if (statusFilter === 'unresolved' && showResolved) {
+        // Fetch resolved and dismissed reports separately
+        const resolvedParams = new URLSearchParams({
+          page: '1',
+          limit: '50',
+        })
+        if (reasonFilter && reasonFilter !== 'all') resolvedParams.append('reason', reasonFilter)
+
+        // Fetch resolved and dismissed
+        const [resolvedRes, dismissedRes] = await Promise.all([
+          fetch(`/api/admin/reports?status=resolved&${resolvedParams}`),
+          fetch(`/api/admin/reports?status=dismissed&${resolvedParams}`)
+        ])
+
+        if (resolvedRes.ok) {
+          const resolvedData = await resolvedRes.json()
+          filteredReports = [...filteredReports, ...(resolvedData.reports || [])]
+        }
+        if (dismissedRes.ok) {
+          const dismissedData = await dismissedRes.json()
+          filteredReports = [...filteredReports, ...(dismissedData.reports || [])]
+        }
+
+        // Sort by created date (newest first)
+        filteredReports.sort((a: ReportData, b: ReportData) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+      }
+
+      setReports(filteredReports)
       setTotalPages(data.pagination?.totalPages || 1)
     } catch (error) {
       console.error('Error fetching reports:', error)
@@ -124,7 +165,8 @@ export default function AdminReportsPage() {
                   <SelectValue placeholder="All statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All statuses</SelectItem>
+                  <SelectItem value="unresolved">Unresolved (Pending + Reviewed)</SelectItem>
+                  <SelectItem value="all">All statuses</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="reviewed">Reviewed</SelectItem>
                   <SelectItem value="resolved">Resolved</SelectItem>
@@ -145,7 +187,7 @@ export default function AdminReportsPage() {
                   <SelectValue placeholder="All reasons" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All reasons</SelectItem>
+                  <SelectItem value="all">All reasons</SelectItem>
                   {REPORT_REASONS.map((reason) => (
                     <SelectItem key={reason.value} value={reason.value}>
                       {reason.label}
@@ -155,6 +197,25 @@ export default function AdminReportsPage() {
               </Select>
             </div>
           </div>
+
+          {/* Show Resolved Toggle */}
+          {statusFilter === 'unresolved' && (
+            <div className="mt-4 flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="showResolved"
+                checked={showResolved}
+                onChange={(e) => {
+                  setShowResolved(e.target.checked)
+                  setPage(1)
+                }}
+                className="h-4 w-4 rounded border-gray-300"
+              />
+              <Label htmlFor="showResolved" className="text-sm font-medium cursor-pointer">
+                Show resolved and dismissed reports
+              </Label>
+            </div>
+          )}
         </CardContent>
       </Card>
 

@@ -26,7 +26,10 @@ export async function GET(request: NextRequest) {
     // Build query
     const query: any = {}
 
-    if (status) {
+    // Handle unresolved status (pending + reviewed)
+    if (status === 'unresolved') {
+      query.status = { $in: ['pending', 'reviewed'] }
+    } else if (status) {
       query.status = status
     }
 

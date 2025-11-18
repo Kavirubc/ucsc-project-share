@@ -36,7 +36,10 @@ export default async function AdminDashboard() {
   const totalUniversities = await db.collection<University>('universities').countDocuments()
   const bannedUsers = await db.collection<User>('users').countDocuments({ isBanned: true })
   const adminUsers = await db.collection<User>('users').countDocuments({ role: 'admin' })
-  const pendingReports = await db.collection<ProjectReport>('projectReports').countDocuments({ status: 'pending' })
+  // Count unresolved reports (pending + reviewed, not resolved/dismissed)
+  const unresolvedReports = await db.collection<ProjectReport>('projectReports').countDocuments({
+    status: { $in: ['pending', 'reviewed'] }
+  })
 
   // Get analytics data
   const { getAnalyticsData } = await import('@/lib/utils/analytics')
@@ -111,9 +114,9 @@ export default async function AdminDashboard() {
           icon={AlertCircle}
         />
         <StatsCard
-          title="Pending Reports"
-          value={pendingReports}
-          description="Awaiting review"
+          title="Unresolved Reports"
+          value={unresolvedReports}
+          description="Pending review"
           icon={Flag}
         />
       </div>
@@ -171,9 +174,9 @@ export default async function AdminDashboard() {
               <Button className="w-full">
                 <Flag className="h-4 w-4 mr-2" />
                 Manage Reports
-                {pendingReports > 0 && (
+                {unresolvedReports > 0 && (
                   <span className="ml-2 bg-destructive text-destructive-foreground text-xs px-1.5 py-0.5 rounded-full">
-                    {pendingReports}
+                    {unresolvedReports}
                   </span>
                 )}
               </Button>

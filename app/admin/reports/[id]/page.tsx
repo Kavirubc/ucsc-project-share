@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import { ArrowLeft, Check, X, ExternalLink, Flag, User, Calendar } from 'lucide-react'
 import Link from 'next/link'
-import { getReportStatusBadge, getStatusLabel, getReasonLabel } from '@/lib/utils/reports'
+import { getReportStatusBadge, getStatusLabel, getReasonLabel } from '@/lib/utils/reports-client'
 import { REPORT_REASONS } from '@/lib/constants/reports'
 
 interface ReportDetailData {
