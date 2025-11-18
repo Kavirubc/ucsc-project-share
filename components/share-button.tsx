@@ -7,9 +7,10 @@ import { Share2, Check } from 'lucide-react'
 interface ShareButtonProps {
   projectId: string
   projectTitle: string
+  iconOnly?: boolean
 }
 
-export function ShareButton({ projectId, projectTitle }: ShareButtonProps) {
+export function ShareButton({ projectId, projectTitle, iconOnly = false }: ShareButtonProps) {
   const [copied, setCopied] = useState(false)
 
   const getProjectUrl = () => {
@@ -42,6 +43,24 @@ export function ShareButton({ projectId, projectTitle }: ShareButtonProps) {
         }
       }
     }
+  }
+
+  if (iconOnly) {
+    return (
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={handleShare}
+        className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/20"
+        title="Share project"
+      >
+        {copied ? (
+          <Check className="h-5 w-5 text-yellow-400" />
+        ) : (
+          <Share2 className="h-5 w-5 text-yellow-400" />
+        )}
+      </Button>
+    )
   }
 
   return (

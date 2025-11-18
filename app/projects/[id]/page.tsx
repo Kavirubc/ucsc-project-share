@@ -105,12 +105,26 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   </span>
                 </div>
               </div>
+              {/* Like and Share Buttons - Bottom Right */}
+              <div className="absolute bottom-6 right-6 flex gap-2">
+                <LikeButton
+                  projectId={id}
+                  initialLikesCount={project.likes || 0}
+                  initialIsLiked={isLiked}
+                  iconOnly={true}
+                />
+                <ShareButton
+                  projectId={id}
+                  projectTitle={project.title}
+                  iconOnly={true}
+                />
+              </div>
             </div>
           )}
 
           {/* Header (for projects without thumbnail) */}
           {!project.thumbnailUrl && (
-            <div>
+            <div className="relative">
               <div className="flex flex-wrap gap-2 mb-4">
                 <Badge variant={project.status === 'completed' ? 'default' : 'secondary'}>
                   {project.status}
@@ -138,6 +152,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     {owner?.name}
                   </Link>
                 </span>
+              </div>
+              {/* Like and Share Buttons - Top Right */}
+              <div className="absolute top-0 right-0 flex gap-2">
+                <LikeButton
+                  projectId={id}
+                  initialLikesCount={project.likes || 0}
+                  initialIsLiked={isLiked}
+                  iconOnly={true}
+                />
+                <ShareButton
+                  projectId={id}
+                  projectTitle={project.title}
+                  iconOnly={true}
+                />
               </div>
             </div>
           )}
@@ -336,19 +364,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   </div>
                 </div>
               )}
-
-              {/* Like and Share Buttons */}
-              <div className="space-y-3">
-                <LikeButton
-                  projectId={id}
-                  initialLikesCount={project.likes || 0}
-                  initialIsLiked={isLiked}
-                />
-                <ShareButton
-                  projectId={id}
-                  projectTitle={project.title}
-                />
-              </div>
 
               {/* Report Button - Bottom of sidebar */}
               <ReportProjectButton

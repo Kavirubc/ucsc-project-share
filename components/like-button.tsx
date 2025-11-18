@@ -10,12 +10,14 @@ interface LikeButtonProps {
   projectId: string
   initialLikesCount: number
   initialIsLiked?: boolean
+  iconOnly?: boolean
 }
 
 export function LikeButton({
   projectId,
   initialLikesCount,
   initialIsLiked = false,
+  iconOnly = false,
 }: LikeButtonProps) {
   const { data: session } = useSession()
   const router = useRouter()
@@ -91,11 +93,43 @@ export function LikeButton({
 
   // Only show for authenticated users
   if (!session?.user) {
+    if (iconOnly) {
+      return (
+        <div className="flex items-center gap-1">
+          <Heart className="h-5 w-5 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">{likesCount}</span>
+        </div>
+      )
+    }
     return (
       <div className="flex items-center gap-2">
         <Heart className="h-4 w-4 text-muted-foreground" />
         <span className="text-sm text-muted-foreground">{likesCount}</span>
       </div>
+    )
+  }
+
+  if (iconOnly) {
+    return (
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={handleToggleLike}
+        disabled={isLoading}
+        className="relative bg-white/10 backdrop-blur-md border-white/20 hover:bg-rose-500/20 hover:border-rose-400/30 group"
+        title={isLiked ? 'Unlike' : 'Like'}
+      >
+        {isLiked ? (
+          <Heart className="h-5 w-5 fill-rose-500 text-rose-500" />
+        ) : (
+          <Heart className="h-5 w-5 text-white group-hover:text-rose-300" />
+        )}
+        {likesCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
+            {likesCount}
+          </span>
+        )}
+      </Button>
     )
   }
 
