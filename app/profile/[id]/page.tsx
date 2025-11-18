@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Mail, MapPin, School, Eye, Linkedin, Github, FileText, Edit } from 'lucide-react'
+import { Mail, MapPin, School, Eye, Linkedin, Github, FileText, Edit, Heart } from 'lucide-react'
 import Link from 'next/link'
 import { auth } from '@/auth'
 
@@ -230,6 +230,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                         <span className="flex items-center gap-1">
                           <Eye className="h-3 w-3" />
                           {project.views}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <Heart className="h-3 w-3" />
+                          {project.likes || 0}
                         </span>
                         <span>•</span>
                         <span>

@@ -5,11 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { PortfolioLinkCard } from '@/components/portfolio-link-card'
 import { getDatabase } from '@/lib/mongodb'
 import { Project } from '@/lib/models/Project'
+import { ProjectLike } from '@/lib/models/ProjectLike'
 import { ObjectId } from 'mongodb'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Eye, Edit, FolderKanban, Users, TrendingUp } from 'lucide-react'
+import { Eye, Edit, FolderKanban, Users, TrendingUp, Heart } from 'lucide-react'
 import { StatsCard } from '@/components/admin/stats-card'
 import { ProjectViewsChart } from '@/components/user/charts/project-views-chart'
 import { ProjectCreationChart } from '@/components/user/charts/project-creation-chart'
@@ -71,6 +72,28 @@ export default async function Dashboard() {
     .sort({ createdAt: -1 })
     .limit(6)
     .toArray()
+
+  // Get liked projects
+  const likedProjectIds = await db.collection<ProjectLike>('projectLikes')
+    .find({ userId: userId })
+    .sort({ createdAt: -1 })
+    .limit(6)
+    .toArray()
+
+  // Fetch projects and maintain order
+  const likedProjects = likedProjectIds.length > 0
+    ? (await db.collection<Project>('projects')
+        .find({
+          _id: { $in: likedProjectIds.map(like => like.projectId) }
+        })
+        .toArray())
+        .sort((a, b) => {
+          // Maintain the order from likedProjectIds
+          const aIndex = likedProjectIds.findIndex(like => like.projectId.toString() === a._id!.toString())
+          const bIndex = likedProjectIds.findIndex(like => like.projectId.toString() === b._id!.toString())
+          return aIndex - bIndex
+        })
+    : []
 
   // Get base URL - prioritize NEXT_PUBLIC_BASE_URL from .env, fallback to request headers
   let baseUrl = process.env.NEXT_PUBLIC_BASE_URL
@@ -258,6 +281,80 @@ export default async function Dashboard() {
           </Card>
         </div>
 
+        {/* Liked Projects */}
+        {likedProjects.length > 0 && (
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Liked Projects</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {likedProjects.map((project) => (
+                <Card key={project._id!.toString()} className="flex flex-col overflow-hidden">
+                  {project.thumbnailUrl && (
+                    <div className="relative w-full h-48 bg-muted overflow-hidden">
+                      <img
+                        src={project.thumbnailUrl}
+                        alt={project.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <CardHeader>
+                    <div className="flex justify-between items-start mb-2">
+                      <Badge variant={project.status === 'completed' ? 'default' : 'secondary'}>
+                        {project.status}
+                      </Badge>
+                      <Badge variant="outline">{project.category}</Badge>
+                    </div>
+                    <CardTitle className="line-clamp-1">{project.title}</CardTitle>
+                    <CardDescription className="line-clamp-2">
+                      {project.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="grow">
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.tags.slice(0, 3).map((tag, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                      {project.tags.length > 3 && (
+                        <Badge variant="secondary" className="text-xs">
+                          +{project.tags.length - 3}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex gap-2 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Eye className="h-3 w-3" />
+                        {project.views}
+                      </span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Heart className="h-3 w-3" />
+                        {project.likes || 0}
+                      </span>
+                      <span>•</span>
+                      <span>
+                        {project.teamMembers.length} member
+                        {project.teamMembers.length !== 1 ? 's' : ''}
+                      </span>
+                    </div>
+                  </CardContent>
+                  <CardContent className="pt-0">
+                    <Link href={`/projects/${project._id!.toString()}`}>
+                      <Button variant="outline" size="sm" className="w-full">
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Project
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Recent Projects */}
         <div>
           <div className="flex justify-between items-center mb-6">
@@ -320,6 +417,11 @@ export default async function Dashboard() {
                       <span className="flex items-center gap-1">
                         <Eye className="h-3 w-3" />
                         {project.views}
+                      </span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Heart className="h-3 w-3" />
+                        {project.likes || 0}
                       </span>
                       <span>•</span>
                       <span>

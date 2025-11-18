@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Eye, ExternalLink, Github, FileText, Video } from 'lucide-react'
+import { Eye, ExternalLink, Github, FileText, Video, Heart } from 'lucide-react'
 import Link from 'next/link'
 import { Project } from '@/lib/models/Project'
 
@@ -142,6 +142,11 @@ export function ExploreProjects() {
                   <span className="flex items-center gap-1">
                     <Eye className="h-3 w-3" />
                     {project.views}
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    <Heart className="h-3 w-3" />
+                    {project.likes || 0}
                   </span>
                   <span>•</span>
                   <span>

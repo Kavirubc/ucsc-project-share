@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Edit, Trash2, Eye, ExternalLink, Github } from 'lucide-react'
+import { Edit, Trash2, Eye, ExternalLink, Github, Heart } from 'lucide-react'
 import Link from 'next/link'
 import { Project } from '@/lib/models/Project'
 
@@ -109,6 +109,11 @@ export function ProjectsList({ userId }: ProjectsListProps) {
               <span className="flex items-center gap-1">
                 <Eye className="h-3 w-3" />
                 {project.views}
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <Heart className="h-3 w-3" />
+                {project.likes || 0}
               </span>
               <span>•</span>
               <span>{project.teamMembers.length} member{project.teamMembers.length !== 1 ? 's' : ''}</span>
