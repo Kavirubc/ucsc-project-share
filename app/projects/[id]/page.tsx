@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Eye, ExternalLink, Github, FileText, Video, Calendar, Users, Globe } from 'lucide-react'
 import Link from 'next/link'
 import { VideoEmbed } from '@/components/video-embed'
+import { ReportProjectButton } from '@/components/report-project-button'
 import ReactMarkdown from 'react-markdown'
 
 interface ProjectPageProps {

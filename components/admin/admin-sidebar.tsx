@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -10,23 +10,43 @@ import {
   Users,
   FolderKanban,
   Building2,
+  Flag,
   Menu,
   X,
 } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Projects', href: '/admin/projects', icon: FolderKanban },
+  { name: 'Reports', href: '/admin/reports', icon: Flag },
   { name: 'Universities', href: '/admin/universities', icon: Building2 },
 ]
 
 export function AdminSidebar() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [pendingReportsCount, setPendingReportsCount] = useState<number | null>(null)
+
+  // Fetch pending reports count
+  useEffect(() => {
+    const fetchPendingCount = async () => {
+      try {
+        const response = await fetch('/api/admin/reports?status=pending&limit=1')
+        if (response.ok) {
+          const data = await response.json()
+          setPendingReportsCount(data.pagination?.total || 0)
+        }
+      } catch (error) {
+        console.error('Error fetching pending reports count:', error)
+      }
+    }
+    fetchPendingCount()
+  }, [])
 
   const sidebarContent = (
     <div className="flex h-full flex-col">
@@ -37,20 +57,28 @@ export function AdminSidebar() {
         {navigation.map((item) => {
           const isActive = pathname === item.href || 
             (item.href !== '/admin' && pathname.startsWith(item.href))
+          const showBadge = item.name === 'Reports' && pendingReportsCount !== null && pendingReportsCount > 0
           return (
             <Link
               key={item.name}
               href={item.href}
               onClick={() => setMobileOpen(false)}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                'flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                 isActive
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
               )}
             >
-              <item.icon className="h-5 w-5" />
-              {item.name}
+              <div className="flex items-center gap-3">
+                <item.icon className="h-5 w-5" />
+                {item.name}
+              </div>
+              {showBadge && (
+                <Badge variant="destructive" className="h-5 min-w-5 px-1.5 text-xs">
+                  {pendingReportsCount > 99 ? '99+' : pendingReportsCount}
+                </Badge>
+              )}
             </Link>
           )
         })}
