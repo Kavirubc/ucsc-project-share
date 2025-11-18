@@ -6,11 +6,15 @@ import { ObjectId } from 'mongodb'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Eye, ExternalLink, Github, FileText, Video, Calendar, Users, Globe } from 'lucide-react'
+import { Eye, ExternalLink, Github, FileText, Video, Globe, Heart } from 'lucide-react'
 import Link from 'next/link'
 import { VideoEmbed } from '@/components/video-embed'
 import { ReportProjectButton } from '@/components/report-project-button'
+import { LikeButton } from '@/components/like-button'
+import { ShareButton } from '@/components/share-button'
 import ReactMarkdown from 'react-markdown'
+import { auth } from '@/auth'
+import { ProjectLike } from '@/lib/models/ProjectLike'
 
 interface ProjectPageProps {
   params: Promise<{
@@ -39,6 +43,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const owner = await db.collection<User>('users').findOne({
     _id: project.userId
   })
+
+  // Check if current user has liked this project
+  const session = await auth()
+  let isLiked = false
+  if (session?.user) {
+    const like = await db.collection<ProjectLike>('projectLikes').findOne({
+      userId: new ObjectId(session.user.id),
+      projectId: new ObjectId(id)
+    })
+    isLiked = !!like
+  }
 
   // Increment view count
   await db.collection<Project>('projects').updateOne(
@@ -74,6 +89,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     {project.views} views
                   </span>
                   <span>•</span>
+                  <span className="flex items-center gap-1">
+                    <Heart className="h-4 w-4" />
+                    {project.likes || 0} likes
+                  </span>
+                  <span>•</span>
                   <span>
                     By{' '}
                     <Link
@@ -85,12 +105,26 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   </span>
                 </div>
               </div>
+              {/* Like and Share Buttons - Bottom Right */}
+              <div className="absolute bottom-6 right-6 flex gap-2">
+                <LikeButton
+                  projectId={id}
+                  initialLikesCount={project.likes || 0}
+                  initialIsLiked={isLiked}
+                  iconOnly={true}
+                />
+                <ShareButton
+                  projectId={id}
+                  projectTitle={project.title}
+                  iconOnly={true}
+                />
+              </div>
             </div>
           )}
 
           {/* Header (for projects without thumbnail) */}
           {!project.thumbnailUrl && (
-            <div>
+            <div className="relative">
               <div className="flex flex-wrap gap-2 mb-4">
                 <Badge variant={project.status === 'completed' ? 'default' : 'secondary'}>
                   {project.status}
@@ -104,6 +138,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   {project.views} views
                 </span>
                 <span>•</span>
+                <span className="flex items-center gap-1">
+                  <Heart className="h-4 w-4" />
+                  {project.likes || 0} likes
+                </span>
+                <span>•</span>
                 <span>
                   By{' '}
                   <Link
@@ -113,6 +152,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     {owner?.name}
                   </Link>
                 </span>
+              </div>
+              {/* Like and Share Buttons - Top Right */}
+              <div className="absolute top-0 right-0 flex gap-2">
+                <LikeButton
+                  projectId={id}
+                  initialLikesCount={project.likes || 0}
+                  initialIsLiked={isLiked}
+                  iconOnly={true}
+                />
+                <ShareButton
+                  projectId={id}
+                  projectTitle={project.title}
+                  iconOnly={true}
+                />
               </div>
             </div>
           )}
@@ -269,7 +322,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               {project.teamMembers.length > 0 && (
                 <div className="border rounded-lg p-6">
                   <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                    <Users className="h-6 w-6 text-primary" />
+                    {/* <Users className="h-6 w-6 text-primary" /> */}
                     Team Members
                   </h2>
                   <div className="space-y-3">
