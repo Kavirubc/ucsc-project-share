@@ -8,12 +8,21 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet'
-import { Menu, User, LogOut, Home, FolderOpen, Compass, Shield, Award } from 'lucide-react'
-import Link from 'next/link'
-import { signOut } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+} from "@/components/ui/sheet";
+import {
+  Menu,
+  User,
+  LogOut,
+  Home,
+  FolderOpen,
+  Compass,
+  Shield,
+  Award,
+} from "lucide-react";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface MobileNavProps {
   session: {
@@ -106,7 +115,6 @@ export function MobileNav({ session }: MobileNavProps) {
                 <Compass className="h-5 w-5" />
                 Explore
               </Link>
-              {session.user?.role === "admin" && (
               <Link
                 href="/contributors"
                 onClick={() => setOpen(false)}
@@ -115,6 +123,7 @@ export function MobileNav({ session }: MobileNavProps) {
                 <Award className="h-5 w-5" />
                 Contributors
               </Link>
+              {session.user?.role === "admin" && (
                 <Link
                   href="/admin"
                   onClick={() => setOpen(false)}
