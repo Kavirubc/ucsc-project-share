@@ -9,17 +9,24 @@ export async function GET(request: NextRequest) {
     const db = await getDatabase()
 
     // Fetch all users who are contributors (either contributor or core-contributor)
+    // Exclude only users where isBanned is explicitly true
     const contributors = await db
       .collection<User>('users')
       .find(
         {
           contributorType: { $in: ['contributor', 'core-contributor'] },
-          isBanned: false // Exclude banned users
+          isBanned: { $ne: true } // Not equal to true (includes false, null, undefined, and non-existent)
         },
         { projection: { password: 0 } } // Exclude password
       )
-      .sort({ contributedAt: -1 }) // Sort by contribution date, newest first
       .toArray()
+
+    // Sort contributors: use contributedAt if available, otherwise createdAt
+    contributors.sort((a, b) => {
+      const dateA = a.contributedAt || a.createdAt
+      const dateB = b.contributedAt || b.createdAt
+      return dateB.getTime() - dateA.getTime() // Newest first
+    })
 
     // Fetch university info for each contributor
     const contributorsWithUniversity = await Promise.all(
