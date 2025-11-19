@@ -77,9 +77,9 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
                 <div className="flex-grow space-y-4">
                   <div>
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex items-baseline gap-3 mb-2">
                       <h1 className="text-3xl font-bold">{user.name}</h1>
-                      {/* Contributor badge with glassy styling */}
+                      {/* Contributor badge with glassy styling - aligned with name baseline */}
                       {user.contributorType && (
                         <ContributorBadge contributorType={user.contributorType} />
                       )}

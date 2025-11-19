@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ContributorBadge } from '@/components/contributor-badge'
-import { Award, School, MapPin, ExternalLink } from 'lucide-react'
+import { Award, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 
 interface Contributor {
@@ -152,7 +152,7 @@ export default function ContributorsPage() {
   )
 }
 
-// Contributor card component
+// Contributor card component - shows avatar, name, type, and view profile
 function ContributorCard({ contributor }: { contributor: Contributor }) {
   return (
     <Card className="flex flex-col hover:shadow-lg transition-shadow">
@@ -172,31 +172,12 @@ function ContributorCard({ contributor }: { contributor: Contributor }) {
           </Avatar>
 
           {/* Name and Badge */}
-          <div className="space-y-2">
+          <div className="space-y-3 w-full">
             <h3 className="text-xl font-bold">{contributor.name}</h3>
             <div className="flex justify-center">
               <ContributorBadge contributorType={contributor.contributorType} />
             </div>
           </div>
-
-          {/* Bio */}
-          {contributor.bio && (
-            <p className="text-sm text-muted-foreground line-clamp-2">{contributor.bio}</p>
-          )}
-
-          {/* University */}
-          {contributor.university && (
-            <div className="space-y-1 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1 justify-center">
-                <School className="h-4 w-4" />
-                {contributor.university.name}
-              </div>
-              <div className="flex items-center gap-1 justify-center">
-                <MapPin className="h-4 w-4" />
-                {contributor.university.district}, {contributor.university.province}
-              </div>
-            </div>
-          )}
 
           {/* View Profile Button */}
           <Link href={`/profile/${contributor._id}`} className="w-full mt-2">
