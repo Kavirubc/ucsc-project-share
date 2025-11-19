@@ -8,7 +8,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useNotification } from '@/lib/hooks/use-notification'
 import { isValidAcademicEmail, extractEmailDomain } from '@/lib/utils/email'
-import { Building2, MapPin, Mail, Info } from 'lucide-react'
 
 interface UniversityRequestFormProps {
   userEmail?: string // Pre-fill email domain from user's email
@@ -156,7 +155,7 @@ export function UniversityRequestForm({ userEmail, onSuccess, onCancel }: Univer
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           {/* Error display */}
           {error && (
             <div className="p-3 text-sm text-red-500 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/50 rounded-md">
@@ -259,7 +258,7 @@ export function UniversityRequestForm({ userEmail, onSuccess, onCancel }: Univer
             />
           </div>
         </CardContent>
-        <div className="px-6 pb-6 flex gap-3">
+        <div className="px-6 flex gap-3 mt-5">
           {onCancel && (
             <Button
               type="button"
