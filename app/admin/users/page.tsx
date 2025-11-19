@@ -20,6 +20,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { User, Search, Ban, UserCheck, Edit, Trash2, Eye, Award } from 'lucide-react'
 import Link from 'next/link'
 import { useNotification } from '@/lib/hooks/use-notification'
+import { ContributorBadge } from '@/components/contributor-badge'
 
 interface UserData {
   _id: string
@@ -312,16 +313,11 @@ export default function AdminUsersPage() {
                           )}
                         </td>
                         <td className="p-2">
-                          {user.contributorType === 'core-contributor' ? (
-                            <Badge variant="default" className="flex items-center gap-1 w-fit">
-                              <Award className="h-3 w-3" />
-                              Core
-                            </Badge>
-                          ) : user.contributorType === 'contributor' ? (
-                            <Badge variant="secondary" className="flex items-center gap-1 w-fit">
-                              <Award className="h-3 w-3" />
-                              Contributor
-                            </Badge>
+                          {user.contributorType ? (
+                            <ContributorBadge
+                              contributorType={user.contributorType}
+                              className="text-[10px] px-2 py-0.5"
+                            />
                           ) : (
                             <Badge variant="outline">-</Badge>
                           )}

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { ContributorBadge } from '@/components/contributor-badge'
 import { Award, School, MapPin, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 
@@ -174,13 +174,9 @@ function ContributorCard({ contributor }: { contributor: Contributor }) {
           {/* Name and Badge */}
           <div className="space-y-2">
             <h3 className="text-xl font-bold">{contributor.name}</h3>
-            <Badge
-              variant={contributor.contributorType === 'core-contributor' ? 'default' : 'secondary'}
-              className="flex items-center gap-1 w-fit mx-auto"
-            >
-              <Award className="h-3 w-3" />
-              {contributor.contributorType === 'core-contributor' ? 'Core Contributor' : 'Contributor'}
-            </Badge>
+            <div className="flex justify-center">
+              <ContributorBadge contributorType={contributor.contributorType} />
+            </div>
           </div>
 
           {/* Bio */}
