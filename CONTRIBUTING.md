@@ -54,6 +54,68 @@ You can sign commits using GPG (standard) or SSH (easier if you already use SSH 
 
    - Copy the output and add it to your GitHub Settings \> SSH and GPG Keys \> New GPG Key.
 
+5. **Configure Pinentry (Required for commit signing):**
+
+   If you encounter `error: gpg failed to sign the data` or `Inappropriate ioctl for device`, you need to configure the pinentry program.
+
+   **macOS:**
+
+   ```bash
+   # Install pinentry-mac for GUI password prompts
+   brew install pinentry-mac
+
+   # Configure GPG to use it
+   mkdir -p ~/.gnupg
+   echo "pinentry-program /opt/homebrew/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
+
+   # Restart GPG agent
+   gpgconf --kill gpg-agent
+   ```
+
+   **Windows:**
+
+   Gpg4win includes pinentry programs by default. If you have issues:
+
+   ```bash
+   # Create or edit %APPDATA%\gnupg\gpg-agent.conf
+   # Add this line (adjust path if Gpg4win is installed elsewhere):
+   pinentry-program "C:/Program Files (x86)/Gpg4win/bin/pinentry.exe"
+
+   # Restart GPG agent in PowerShell or Command Prompt
+   gpgconf --kill gpg-agent
+   gpg-connect-agent /bye
+   ```
+
+   **Linux:**
+
+   ```bash
+   # Install a pinentry program (choose based on your environment)
+   # For terminal-only:
+   sudo apt install pinentry-tty
+   # For GUI (GNOME/GTK):
+   sudo apt install pinentry-gtk-2
+   # For GUI (Qt/KDE):
+   sudo apt install pinentry-qt
+
+   # Configure GPG to use it
+   mkdir -p ~/.gnupg
+   echo "pinentry-program /usr/bin/pinentry-tty" >> ~/.gnupg/gpg-agent.conf
+   # or use /usr/bin/pinentry-gtk-2 or /usr/bin/pinentry-qt
+
+   # Restart GPG agent
+   gpgconf --kill gpg-agent
+   ```
+
+   **Alternative Solution (All Platforms):**
+
+   Add the following to your shell profile (`~/.bashrc`, `~/.zshrc`, or `~/.bash_profile`):
+
+   ```bash
+   export GPG_TTY=$(tty)
+   ```
+
+   Then reload your shell: `source ~/.bashrc` (or restart your terminal).
+
 #### Option B: SSH Signing (Alternative)
 
 If you already use an SSH key to push code, you can use it for signing (Git 2.34+ required).
