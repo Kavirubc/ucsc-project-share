@@ -230,6 +230,17 @@ The module or component affected (e.g., `api`, `ui`, `database`).
 
 Every PR must give clear context so the reviewer understands the "why" and "what" without checking the code first. Ensure your PR targets `main`.
 
+### Merge Requirements
+
+Before your PR can be merged, it must meet these requirements:
+
+1. **All commits must be signed** - See [Commit Signing Policy](#1-commit-signing-policy) above
+2. **All status checks must pass** - Including builds, tests, and deployments
+3. **No merge conflicts** - Your branch must be mergeable with the base branch
+4. **Required approvals** - Get reviews from maintainers as needed
+
+**Having trouble merging?** See our [Merge Troubleshooting Guide](MERGE_TROUBLESHOOTING.md) for help resolving common issues.
+
 **PR Template:**
 
 ```markdown

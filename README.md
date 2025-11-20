@@ -136,6 +136,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines on:
 - Pull request templates
 - Issue reporting
 
+**Can't merge your PR?** Check the [Merge Troubleshooting Guide](MERGE_TROUBLESHOOTING.md) for solutions to common issues.
+
 ## Contributors
 
 See the [Contributors Page](app/contributors/page.tsx) for a list of people who have contributed to this project.
