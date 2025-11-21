@@ -66,34 +66,47 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id
+        token.name = (user as any).name
         token.indexNumber = (user as any).indexNumber
         token.registrationNumber = (user as any).registrationNumber
         token.universityId = (user as any).universityId
         token.role = (user as any).role || 'user'
         token.image = (user as any).image
       } else if (token.id) {
-        // Refresh user profile picture from database periodically
-        // Only refresh if image is missing or if it's been a while (every 5 minutes)
-        const lastRefresh = (token as any).lastImageRefresh || 0
+        // Refresh user data from database periodically
+        // Only refresh if it's been a while (every 5 minutes) or if trigger is 'update'
+        const lastRefresh = (token as any).lastDataRefresh || 0
         const now = Date.now()
         const fiveMinutes = 5 * 60 * 1000
+        const shouldRefresh = trigger === 'update' || !token.name || (now - lastRefresh) > fiveMinutes
 
-        if (!token.image || (now - lastRefresh) > fiveMinutes) {
+        if (shouldRefresh) {
           try {
             const db = await getDatabase()
             const user = await db.collection<User>('users').findOne({
               _id: new ObjectId(token.id as string)
             }, {
-              projection: { profilePicture: 1, image: 1 }
+              projection: {
+                name: 1,
+                indexNumber: 1,
+                registrationNumber: 1,
+                profilePicture: 1,
+                image: 1,
+                role: 1
+              }
             })
             if (user) {
+              token.name = user.name
+              token.indexNumber = user.indexNumber
+              token.registrationNumber = user.registrationNumber
               token.image = user.profilePicture || user.image || null
-                ; (token as any).lastImageRefresh = now
+              token.role = user.role || 'user'
+                ; (token as any).lastDataRefresh = now
             }
           } catch (error) {
-            // If database query fails, continue with existing token.image
+            // If database query fails, continue with existing token data
             // This prevents connection errors from breaking the session
-            console.error('Failed to refresh profile picture in JWT callback:', error)
+            console.error('Failed to refresh user data in JWT callback:', error)
           }
         }
       }
@@ -102,6 +115,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string
+        session.user.name = (token.name as string) || session.user.name
           ; (session.user as any).indexNumber = token.indexNumber
           ; (session.user as any).registrationNumber = token.registrationNumber
           ; (session.user as any).universityId = token.universityId

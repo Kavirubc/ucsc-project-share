@@ -12,7 +12,7 @@ import { User, Lock, Shield, ExternalLink, Edit } from 'lucide-react'
 import { useNotification } from '@/lib/hooks/use-notification'
 
 export default function Settings() {
-    const { data: session, status } = useSession()
+    const { data: session, status, update } = useSession()
     const router = useRouter()
     const [activeTab, setActiveTab] = React.useState<'account' | 'security' | 'profile'>('account')
     const [currentPassword, setCurrentPassword] = React.useState('')
@@ -106,7 +106,14 @@ export default function Settings() {
                 setAccountError(errorMessage)
                 showError(errorMessage)
             } else {
-                const successMessage = 'Account information updated successfully. Please refresh the page to see changes in your session.'
+                // Update the session to refresh user data from database
+                try {
+                    await update()
+                } catch (updateError) {
+                    console.error('Session update error:', updateError)
+                    // Continue anyway - the database was updated successfully
+                }
+                const successMessage = 'Account information updated successfully!'
                 showSuccess(successMessage)
                 // Refresh the page to update server components
                 router.refresh()
