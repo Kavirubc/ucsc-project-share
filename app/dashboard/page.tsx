@@ -220,15 +220,15 @@ export default async function Dashboard() {
         {analytics.topProjects.length > 0 && (
           <Card>
             <CardHeader>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between gap-2 md:items-center flex-col md:flex-row">
                 <div>
                   <CardTitle>Top Performing Projects</CardTitle>
                   <CardDescription>
                     Your projects with the most views
                   </CardDescription>
                 </div>
-                <Link href="/projects">
-                  <Button variant="outline" size="sm">
+                <Link href="/projects" className="w-full md:w-fit">
+                  <Button variant="outline" size="sm" className="w-full">
                     View All
                   </Button>
                 </Link>
@@ -239,19 +239,21 @@ export default async function Dashboard() {
                 {analytics.topProjects.map((project) => (
                   <div
                     key={project.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors flex-col md:flex-row gap-2"
+                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors flex-col md:flex-row gap-4"
                   >
-                    <div className="flex-1">
+                    <div className="flex-1 flex flex-col gap-4">
                       <h3 className="font-semibold mb-1">{project.title}</h3>
-                      <div className="flex w-full justify-between md:justify-start items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Eye className="h-4 w-4" />
-                          {project.views} views
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <TrendingUp className="h-4 w-4" />
-                          {project.likes} likes
-                        </span>
+                      <div className="flex w-full justify-between md:justify-start md:justify-start md:items-center gap-2 text-sm text-muted-foreground flex-col md:flex-row">
+                        <div className="flex justify-start items-start gap-2 w-full md:w-fit">
+                          <span className="flex items-center gap-1">
+                            <Eye className="h-4 w-4" />
+                            {project.views} views
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <TrendingUp className="h-4 w-4" />
+                            {project.likes} likes
+                          </span>
+                        </div>
                         <Badge variant="outline">{project.category}</Badge>
                       </div>
                     </div>

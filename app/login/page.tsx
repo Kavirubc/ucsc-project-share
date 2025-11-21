@@ -10,6 +10,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useNotification } from '@/lib/hooks/use-notification'
 import { Eye, EyeOff } from 'lucide-react'
+import { LoadingModal } from '@/components/ui/loading-modal'
 
 function LoginForm() {
     const [email, setEmail] = React.useState('')
@@ -88,6 +89,11 @@ function LoginForm() {
 
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-background">
+            <LoadingModal 
+                isOpen={isLoading} 
+                title="Signing in..." 
+                description="Please wait while we verify your credentials." 
+            />
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="w-full max-w-md mx-auto lg:max-w-2xl">
                     <Card className="w-full">

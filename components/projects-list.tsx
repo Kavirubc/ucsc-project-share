@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Edit, Trash2, Eye, ExternalLink, Github, Heart } from 'lucide-react'
 import Link from 'next/link'
 import { Project } from '@/lib/models/Project'
+import { ProjectCardSkeleton } from '@/components/ui/project-card-skeleton'
 
 interface ProjectsListProps {
   userId: string
@@ -48,8 +49,18 @@ export function ProjectsList({ userId }: ProjectsListProps) {
     }
   }
 
+
+
+// ... existing imports
+
   if (isLoading) {
-    return <div className="text-center py-12">Loading projects...</div>
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <ProjectCardSkeleton key={i} />
+        ))}
+      </div>
+    )
   }
 
   if (projects.length === 0) {

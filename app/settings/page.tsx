@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { User, Lock, Shield, ExternalLink, Edit } from 'lucide-react'
 import { useNotification } from '@/lib/hooks/use-notification'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function Settings() {
     const { data: session, status, update } = useSession()
@@ -46,9 +47,61 @@ export default function Settings() {
 
     if (status === 'loading') {
         return (
-            <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
-                <div className="text-center">
-                    <p className="text-muted-foreground">Loading...</p>
+            <div className="min-h-[calc(100vh-4rem)] bg-background">
+                <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div className="mb-8">
+                        <Skeleton className="h-9 w-48 mb-2" />
+                        <Skeleton className="h-5 w-64" />
+                    </div>
+
+                    <div className="grid gap-6 lg:grid-cols-4">
+                        {/* Sidebar Skeleton */}
+                        <div className="lg:col-span-1">
+                            <Card>
+                                <CardContent className="p-4 space-y-1">
+                                    <Skeleton className="h-9 w-full" />
+                                    <Skeleton className="h-9 w-full" />
+                                    <Skeleton className="h-9 w-full" />
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        {/* Main Content Skeleton */}
+                        <div className="lg:col-span-3">
+                            <Card>
+                                <CardHeader>
+                                    <Skeleton className="h-6 w-48 mb-2" />
+                                    <Skeleton className="h-4 w-64" />
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-4 w-16" />
+                                        <Skeleton className="h-10 w-full" />
+                                        <Skeleton className="h-3 w-48" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-4 w-24" />
+                                        <Skeleton className="h-10 w-full" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-4 w-24" />
+                                        <Skeleton className="h-10 w-full" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-4 w-32" />
+                                        <Skeleton className="h-10 w-full" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-4 w-16" />
+                                        <Skeleton className="h-10 w-full" />
+                                    </div>
+                                    <div className="pt-2">
+                                        <Skeleton className="h-10 w-48" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
                 </div>
             </div>
         )

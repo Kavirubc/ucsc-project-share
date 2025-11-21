@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Eye, ExternalLink, Github, FileText, Video, Heart } from 'lucide-react'
 import Link from 'next/link'
 import { Project } from '@/lib/models/Project'
+import { ProjectCardSkeleton } from '@/components/ui/project-card-skeleton'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const CATEGORIES = [
   'All',
@@ -58,8 +60,25 @@ export function ExploreProjects() {
     fetchProjects()
   }
 
+
+
   if (isLoading) {
-    return <div className="text-center py-12">Loading projects...</div>
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row gap-4">
+           <div className="flex gap-2 flex-1">
+             <Skeleton className="h-10 flex-1" />
+             <Skeleton className="h-10 w-20" />
+           </div>
+           <Skeleton className="h-10 w-full sm:w-[200px]" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <ProjectCardSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    )
   }
 
   return (
