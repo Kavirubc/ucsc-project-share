@@ -23,6 +23,7 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { MobileLink } from "./mobile-nav-link";
 
 interface MobileNavProps {
   session: {
@@ -91,56 +92,32 @@ export function MobileNav({ session }: MobileNavProps) {
                   </p>
                 </div>
               </div>
-              <Link
-                href="/dashboard"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-2 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors"
-              >
+              <MobileLink href="/dashboard" onClick={() => setOpen(false)}>
                 <Home className="h-5 w-5" />
                 Dashboard
-              </Link>
-              <Link
-                href="/projects"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-2 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors"
-              >
+              </MobileLink>
+              <MobileLink href="/projects" onClick={() => setOpen(false)}>
                 <FolderOpen className="h-5 w-5" />
                 Projects
-              </Link>
-              <Link
-                href="/explore"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-2 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors"
-              >
+              </MobileLink>
+              <MobileLink href="/explore" onClick={() => setOpen(false)}>
                 <Compass className="h-5 w-5" />
                 Explore
-              </Link>
-              <Link
-                href="/contributors"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-2 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors"
-              >
+              </MobileLink>
+              <MobileLink href="/contributors" onClick={() => setOpen(false)}>
                 <Award className="h-5 w-5" />
                 Contributors
-              </Link>
+              </MobileLink>
               {session.user?.role === "admin" && (
-                <Link
-                  href="/admin"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-2 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors"
-                >
+                <MobileLink href="/admin" onClick={() => setOpen(false)}>
                   <Shield className="h-5 w-5" />
                   Admin
-                </Link>
+                </MobileLink>
               )}
-              <Link
-                href="/settings"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-2 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors"
-              >
+              <MobileLink href="/settings" onClick={() => setOpen(false)}>
                 <User className="h-5 w-5" />
                 Settings
-              </Link>
+              </MobileLink>
               <button
                 onClick={handleSignOut}
                 className="flex items-center gap-3 px-2 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors text-left w-full mt-4 border-t pt-6"
@@ -159,22 +136,14 @@ export function MobileNav({ session }: MobileNavProps) {
               <Link href="/register" onClick={() => setOpen(false)}>
                 <Button className="w-full">Sign Up</Button>
               </Link>
-              <Link
-                href="/explore"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-2 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors"
-              >
+              <MobileLink href="/explore" onClick={() => setOpen(false)}>
                 <Compass className="h-5 w-5" />
                 Explore
-              </Link>
-              <Link
-                href="/contributors"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-2 py-3 text-sm font-medium hover:bg-accent rounded-md transition-colors"
-              >
+              </MobileLink>
+              <MobileLink href="/contributors" onClick={() => setOpen(false)}>
                 <Award className="h-5 w-5" />
                 Contributors
-              </Link>
+              </MobileLink>
             </>
           )}
         </div>
